@@ -1,0 +1,10 @@
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+sqlalchemy==2.0.29
+oracledb>=1.0.0
+pydantic==2.6.4
+python-dotenv==1.0.1
+requests==2.31.0
+streamlit==1.33.0
+pandas==2.2.2
+pip install streamlit requests pandas plotly
