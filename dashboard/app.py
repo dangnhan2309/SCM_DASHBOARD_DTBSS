@@ -1,301 +1,367 @@
-# import streamlit as st
-# import requests
-# import pandas as pd
-# import plotly.express as px
-
-# # Cấu hình giao diện
-# st.set_page_config(page_title="HUTECH Distributed ERP", layout="wide")
-
-# API_BASE_URL = "http://127.0.0.1:8000"
-
-# st.title("🚀 Hệ Thống Quản Lý Kho Phân Tán")
-# st.sidebar.header("Cấu hình & Điều khiển")
-
-# # --- TAB 1: DASHBOARD & BI ---
-# tab1, tab2, tab3 = st.tabs(["📊 Tổng quan tồn kho", "📝 Nhập phiếu mới", "📈 Báo cáo giá trị"])
-
-# with tab1:
-#     st.subheader("📦 Dashboard tồn kho phân tán")
-
-#     col_top1, col_top2 = st.columns(2)
-
-#     # 🔥 CHỌN SITE (DEMO 1)
-#     with col_top1:
-#         site_selected = st.selectbox(
-#             "🔎 Chọn Site xem dữ liệu",
-#             ["GLOBAL", "BAC", "TRUNG", "NAM"]
-#         )
-
-#     # 🔥 BUTTON LOAD
-#     with col_top2:
-#         load_btn = st.button("🚀 Tải dữ liệu")
-
-#     if load_btn:
-#         try:
-#             # =========================
-#             # CASE 1: GLOBAL
-#             # =========================
-#             if site_selected == "GLOBAL":
-#                 url = f"{API_BASE_URL}/tonkho/global"
-#                 st.info("🌐 Đang lấy dữ liệu toàn hệ thống (DBLINK)")
-
-#             # =========================
-#             # CASE 2: LOCAL SITE
-#             # =========================
-#             else:
-#                 url = f"{API_BASE_URL}/tonkho/{site_selected or "".lower()}"
-#                 st.info(f"📍 Đang lấy dữ liệu tại Site {site_selected}")
-
-#             res = requests.get(url)
-
-#             if res.status_code == 200:
-#                 df = pd.DataFrame(res.json())
-
-#                 if not df.empty:
-
-#                     # =========================
-#                     # 🔥 METRIC (ĂN ĐIỂM)
-#                     # =========================
-#                     total = df["SoLuongTon"].sum()
-#                     st.metric("📊 Tổng tồn kho", f"{total:,.0f}")
-
-#                     # =========================
-#                     # TABLE
-#                     # =========================
-#                     st.dataframe(df, use_container_width=True)
-
-#                     col1, col2 = st.columns(2)
-
-#                     # =========================
-#                     # BAR CHART
-#                     # =========================
-#                     with col1:
-#                         st.write("📊 Tồn theo Vật tư")
-
-#                         fig_bar = px.bar(
-#                             df,
-#                             x="MaVT",
-#                             y="SoLuongTon",
-#                             color="KhuVuc" if "KhuVuc" in df.columns else None,
-#                             barmode="group"
-#                         )
-#                         st.plotly_chart(fig_bar, use_container_width=True)
-
-#                     # =========================
-#                     # PIE CHART
-#                     # =========================
-#                     with col2:
-#                         if "KhuVuc" in df.columns:
-#                             st.write("🌍 Tỉ lệ theo vùng")
-
-#                             fig_pie = px.pie(
-#                                 df,
-#                                 values="SoLuongTon",
-#                                 names="KhuVuc"
-#                             )
-#                             st.plotly_chart(fig_pie, use_container_width=True)
-
-#                 else:
-#                     st.warning("Không có dữ liệu")
-
-#             else:
-#                 st.error("API lỗi!")
-
-#         except Exception as e:
-#             st.error(f"Lỗi: {e}")
-# # --- TAB 2: FORM NHẬP PHIẾU ---
-# with tab2:
-#     st.subheader("➕ Tạo Phiếu Nhập/Xuất Mới")
-    
-#     with st.form("form_phieu"):
-#         col_a, col_b = st.columns(2)
-#         with col_a:
-#             site = st.selectbox("Chọn Site đích", ["NAM", "TRUNG", "BAC"])
-#             ma_phieu = st.text_input("Mã Phiếu (Ví dụ: PN100)")
-#             loai = st.radio("Loại phiếu", ["N", "X"], horizontal=True)
-#         with col_b:
-#             ngay = st.date_input("Ngày thực hiện")
-#             ma_kho = st.text_input("Mã Kho")
-#             dien_giai = st.text_area("Diễn giải")
-            
-#         submit = st.form_submit_button("Lưu Phiếu")
-        
-#         if submit:
-#             payload = {
-#                 "MaPhieu": ma_phieu,
-#                 "NgayNX": str(ngay),
-#                 "LoaiPhieu": loai,
-#                 "DienGiai": dien_giai,
-#                 "MaKho": ma_kho,
-#                 "site": site or "".lower()
-#             }
-
-#             res = requests.post(f"{API_BASE_URL}/phieu", json=payload)
-
-#             if res.status_code == 200:
-#                 st.success(f"✅ Phiếu {ma_phieu} đã tạo tại Site {site}")
-#             else:
-#                 st.error(f"❌ Lỗi: {res.text}")
-
-# # --- TAB 3: BÁO CÁO GIÁ TRỊ (PHÂN TÁN DỌC) ---
-# with tab3:
-#     st.subheader("💰 Báo cáo Giá trị Tồn kho")
-
-#     if st.button("📥 Tải báo cáo tài chính"):
-#         res = requests.get(f"{API_BASE_URL}/report/tonkho-giavon")
-
-#         if res.status_code == 200:
-#             df_report = pd.DataFrame(res.json())
-
-#             if not df_report.empty:
-#                 st.dataframe(df_report, use_container_width=True)
-
-#                 # 🔥 TÍNH TỔNG GIÁ TRỊ
-#                 if "TONGGIATRI" in df_report.columns:
-#                     total_value = df_report["TONGGIATRI"].sum()
-
-#                     st.metric(
-#                         "💸 Tổng giá trị tồn kho",
-#                         f"{total_value:,.0f} VNĐ"
-#                     )
-
-#                 # 🔥 CHART GIÁ TRỊ
-#                 if "TenVT" in df_report.columns:
-#                     fig = px.bar(
-#                         df_report,
-#                         x="TenVT",
-#                         y="TongGiaTri",
-#                         title="Giá trị tồn theo vật tư"
-#                     )
-#                     st.plotly_chart(fig, use_container_width=True)
-
-#         else:
-#             st.error("Không load được report")
-
-
-
-
-
 import streamlit as st
-import requests
 import pandas as pd
-import plotly.express as px
+import requests
 
-# --- CẤU HÌNH ---
-st.set_page_config(page_title="HUTECH Distributed DB Demo", layout="wide")
-API_BASE_URL = "http://127.0.0.1:8000"
+# =========================
+# CONFIG
+# =========================
+BASE_URL = "http://localhost:8000/api"
 
-# Từ điển ánh xạ để hiển thị URL vật lý (Chứng minh tính minh bạch vị trí)
-SITE_MAP = {
-    "BAC": {"port": "1524", "pdb": "pdb_bac", "name": "Miền Bắc"},
-    "TRUNG": {"port": "1522", "pdb": "pdb_trung", "name": "Miền Trung"},
-    "NAM": {"port": "1523", "pdb": "pdb_nam", "name": "Miền Nam (Trụ sở)"},
-    "GLOBAL": {"port": "N/A", "pdb": "CDB$ROOT / DBLINK", "name": "Toàn hệ thống"}
-}
-
-st.title("🚀 Hệ Quản Trị CSDL Phân Tán - ERP Logistics")
-
-# --- 5. GIAO DIỆN GỢI Ý (SIDEBAR) ---
-st.sidebar.header("🕹️ Điều khiển Hệ thống")
-site_selected = st.sidebar.selectbox(
-    "Giả lập quyền truy cập tại Site:",
-    ["GLOBAL", "BAC", "TRUNG", "NAM"],
-    help="Chọn site để chứng minh các mảnh dữ liệu tương ứng."
+st.set_page_config(
+    page_title="SCM Dashboard",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# Hiển thị URL API để chứng minh kết nối vật lý (Yêu cầu 1)
-if site_selected != "GLOBAL":
-    info = SITE_MAP[site_selected]
-    st.sidebar.success(f"🔗 Đang kết nối tới: \nhttp://localhost:{info['port']}/{info['pdb']}")
-else:
-    st.sidebar.info("🌐 Chế độ Global: Sử dụng Gateway DBLINK từ Site NAM")
+st.markdown("""
+<style>
 
-# --- PHÂN CHIA TAB ---
-tab1, tab2, tab3, tab4 = st.tabs([
-    "📦 1. Logistics (Ngang)", 
-    "💰 2. Trụ sở (Dọc)", 
-    "📋 3. Danh mục (Nhân bản)", 
-    "📈 4. Báo cáo hợp nhất"
+/* ===== BACKGROUND ===== */
+body {
+    background-color: #F8FAFC;
+}
+
+/* ===== CONTAINER ===== */
+.block-container {
+    padding-top: 2rem;
+}
+
+/* ===== METRIC CARD ===== */
+div[data-testid="stMetric"] {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.08);
+    border: 1px solid #E2E8F0;
+}
+
+/* 🔥 FIX TEXT TRONG METRIC */
+div[data-testid="stMetric"] label {
+    color: #64748B !important;  /* text phụ */
+    font-size: 14px;
+    font-weight: 500;
+}
+
+div[data-testid="stMetric"] div {
+    color: #1E293B !important;  /* số chính */
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* ===== HEADER ===== */
+h1 {
+    color: #1E293B;
+}
+
+h2, h3 {
+    color: #334155;
+}
+
+/* ===== ALERT FIX ===== */
+div[data-testid="stAlert"] {
+    color: #1E293B !important;
+}
+
+/* ===== DATAFRAME HEADER ===== */
+thead tr th {
+    background-color: #EFF6FF !important;
+    color: #1E3A8A !important;
+}
+
+/* ===== SIDEBAR ===== */
+section[data-testid="stSidebar"] {
+    background-color: #605B51;
+}
+
+/* ===== BUTTON ===== */
+button {
+    background-color: #2563EB !important;
+    color: white !important;
+    border-radius: 10px !important;
+}
+
+button:hover {
+    background-color: #1D4ED8 !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+tab1, tab2= st.tabs([
+    "Overview",
+    "🧪 SQL Test"
 ])
 
-# --- 1. CHỨNG MINH PHÂN MẢNH NGANG ---
 with tab1:
-    st.header("🏢 Quản lý Kho Miền")
-    if st.button(f"🔍 Truy vấn Kho tại {site_selected}"):
-        url = f"{API_BASE_URL}/tonkho/{site_selected.lower()}" if site_selected != "GLOBAL" else f"{API_BASE_URL}/tonkho/global"
-        res = requests.get(url)
-        if res.status_code == 200:
-            df = pd.DataFrame(res.json())
-            
-            # Biểu đồ vùng miền (Yêu cầu 1)
-            st.write(f"### Dữ liệu tồn kho thực tế tại trạm")
-            st.dataframe(df, use_container_width=True)
-            
-            fig = px.bar(df, x="MaVT", y="SoLuongTon", color="MaKho", 
-                         title=f"Biểu đồ tồn kho của {site_selected}")
-            st.plotly_chart(fig, use_container_width=True)
-            
-            st.info(f"💡 Giải thích: Tại trạm {site_selected}, chúng ta chỉ thấy dữ liệu kho thuộc quyền quản lý của miền đó.")
+    # =========================
+    # API CALL
+    # =========================
+    @st.cache_data(ttl=60)
+    def call_api(endpoint):
+        try:
+            res = requests.get(f"{BASE_URL}{endpoint}")
+            if res.status_code == 200:
+                return res.json()
+            return {}
+        except:
+            return {}
 
-# --- 2. CHỨNG MINH PHÂN TÁN DỌC ---
+    # =========================
+    # DATA FUNCTIONS
+    # =========================
+    def get_overview():
+        return call_api("/overview") or {}
+
+    def get_inventory_summary():
+        return pd.DataFrame(call_api("/inventory/summary") or [])
+
+    def get_inventory_item(mavt):
+        return pd.DataFrame(call_api(f"/inventory/{mavt}") or [])
+
+    def get_inventory_by_warehouse():
+        return pd.DataFrame(call_api("/inventory/by-warehouse") or [])
+
+    def get_inventory_value():
+        data = call_api("/inventory/value/KHO_B01")
+        return pd.DataFrame(data.get("data", []))
+
+    def get_lsx(status=None):
+        if status and status != "All":
+            return pd.DataFrame(call_api(f"/lsx?status={status}") or [])
+        return pd.DataFrame(call_api("/lsx") or [])
+
+    def get_giavon():
+        return pd.DataFrame(call_api("/costing/giavon") or [])
+
+    def get_transactions(month=None):
+        if month:
+            return pd.DataFrame(call_api(f"/transactions/nhap?month={month}") or [])
+        return pd.DataFrame(call_api("/transactions") or [])
+
+    def get_alerts():
+        return pd.DataFrame(call_api("/alerts/low-stock") or [])
+
+    def get_global_inventory():
+        data = call_api("/global/inventory/VT01")
+        return data[0]["total"] if data else 0
+
+    # =========================
+    # SIDEBAR
+    # =========================
+    with st.sidebar:
+        st.title("🚀 SCM System")
+        st.caption("Distributed Database")
+        st.divider()
+
+        mavt = st.text_input("🔍 Mã vật tư", "VT01")
+        month = st.slider("📅 Tháng", 1, 12, 4)
+
+    # =========================
+    # HEADER
+    # =========================
+  
+
+    overview = get_overview()
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("Inventory", overview.get("total_inventory", 0))
+    col2.metric("LSX", overview.get("total_lsx", 0))
+    col3.metric("Transactions", overview.get("total_transactions", 0))
+    col4.metric("Global VT01", get_global_inventory())
+
+    # =========================
+    # INVENTORY
+    # =========================
+    st.subheader("📦 Inventory")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("### Theo Site")
+        df = get_inventory_summary()
+
+        if not df.empty:
+            df = df.rename(columns={
+                "site": "Site",
+                "total_quantity": "Quantity"
+            })
+            st.bar_chart(df.set_index("Site"))
+
+    with col2:
+        st.markdown("### Theo Kho")
+        df_wh = get_inventory_by_warehouse()
+
+        if not df_wh.empty:
+            df_wh = df_wh.groupby("MAKHO")["SOLUONGTON"].sum().reset_index()
+            st.bar_chart(df_wh.set_index("MAKHO"))
+
+    # =========================
+    # ITEM LOOKUP
+    # =========================
+    st.subheader("🔍 Tra cứu vật tư")
+
+    df_item = get_inventory_item(mavt)
+
+    if not df_item.empty:
+        df_item = df_item.groupby("MAKHO")["SOLUONGTON"].sum().reset_index()
+        st.dataframe(df_item, use_container_width=True)
+
+    # =========================
+    # VALUE
+    # =========================
+    st.subheader("💰 Inventory Value (KHO_B01)")
+
+    df_val = get_inventory_value()
+
+    if not df_val.empty:
+        st.dataframe(df_val, use_container_width=True)
+
+        total_value = df_val["THANHTIEN"].sum()
+        st.metric("Total Value", f"{total_value:,}")
+
+    # =========================
+    # MANUFACTURING
+    # =========================
+    st.subheader("🏭 Production")
+
+    status = st.selectbox("Trạng thái", ["All", "DangChay", "HoanThanh"])
+
+    df_lsx = get_lsx(status)
+
+    if not df_lsx.empty:
+        st.dataframe(df_lsx, use_container_width=True)
+
+    # =========================
+    # COSTING
+    # =========================
+    st.subheader("📊 Costing")
+
+    df_cost = get_giavon()
+
+    if not df_cost.empty:
+        st.dataframe(df_cost, use_container_width=True)
+
+    # =========================
+    # TRANSACTIONS
+    # =========================
+    st.subheader("📑 Transactions")
+
+    df_trans = get_transactions(month)
+
+    if not df_trans.empty:
+        st.dataframe(df_trans, use_container_width=True)
+
+    # =========================
+    # ALERTS
+    # =========================
+    st.subheader("🚨 Low Stock")
+
+    df_alert = get_alerts()
+
+    if not df_alert.empty:
+        st.dataframe(df_alert, use_container_width=True)
+        st.metric("⚠️ Items thiếu", len(df_alert))
+
+# =========================
+# TAB 7: SQL TEST
+# =========================
 with tab2:
-    st.header("🛡️ Bảo mật & Phân tán Dọc")
-    st.write("Yêu cầu: Thông tin Giá vốn và Định mức chỉ lưu tại Trụ sở (NAM).")
-        
-    if st.button("⚖️ Kiểm tra bảng Giá vốn"):
-        res = requests.get(f"{API_BASE_URL}/vattu/giavon?site={site_selected}")
-        
-        if res.status_code == 200:
-            data = res.json()
-            if data:
-                st.success(f"✅ Truy cập thành công bảng GIAVON tại {site_selected}")
-                df = pd.DataFrame(data)
-                st.table(df) # Dùng st.table để hiện danh sách giá chuẩn/thực tế
+    st.subheader("🧪 Distributed SQL Testing")
+
+    st.info("Test các câu truy vấn & Stored Procedure trong hệ phân tán")
+
+    # =========================
+    # 1. VIEW - LOW STOCK BAC
+    # =========================
+    with st.expander("1️⃣ View Cảnh Báo Hết Hàng (Miền Bắc)"):
+        st.write("""
+        Hiển thị vật tư có tồn kho < MinStock tại miền Bắc
+        """)
+
+        if st.button("Chạy View", key="view1"):
+            df = get_alerts()
+            if not df.empty:
+                st.dataframe(df, use_container_width=True)
+
+    # =========================
+    # 2. QUERY NHẬP TRUNG
+    # =========================
+    with st.expander("2️⃣ Phiếu nhập tháng này - Miền Trung"):
+        st.write("Loại phiếu = NhapMua")
+
+        if st.button("Chạy Query", key="query2"):
+            df = get_transactions(month)
+            if not df.empty:
+                df = df[df["loaiphieu"].str.contains("Nhap", case=False)]
+                st.dataframe(df, use_container_width=True)
+
+    # =========================
+    # 3. STORED PROC - SEARCH VT
+    # =========================
+    with st.expander("3️⃣ SP: Tìm vật tư toàn quốc"):
+        st.write("Tìm tồn kho vật tư trên toàn hệ thống")
+
+        mavt_sp = st.text_input("Nhập MaVT", "VT01", key="sp1")
+
+        if st.button("Chạy SP", key="btn_sp1"):
+            df = get_inventory_item(mavt_sp)
+
+            if not df.empty:
+                df = df.groupby("MAKHO")["SOLUONGTON"].sum().reset_index()
+                df = df.sort_values(by="SOLUONGTON", ascending=False)
+
+                st.dataframe(df, use_container_width=True)
+
+    # =========================
+    # 4. STORED PROC VALUE
+    # =========================
+    with st.expander("4️⃣ SP: Tính giá trị tồn kho"):
+        st.write("JOIN tồn kho + giá vốn (Nam)")
+
+        if st.button("Tính giá trị", key="sp2"):
+            df = get_inventory_value()
+
+            if not df.empty:
+                st.dataframe(df)
+
+                total = df["THANHTIEN"].sum()
+                st.success(f"Tổng giá trị: {total:,}")
+
+    # =========================
+    # 5. GLOBAL INVENTORY
+    # =========================
+    with st.expander("5️⃣ Global Inventory (DATALINK)"):
+        st.write("Tổng tồn kho toàn quốc cho 1 vật tư")
+
+        if st.button("Chạy Global Query", key="q5"):
+            total = get_global_inventory()
+            st.metric("Tổng tồn VT01", total)
+
+    # =========================
+    # 6. TRIGGER DEMO
+    # =========================
+    with st.expander("6️⃣ Trigger Bảo vệ định mức"):
+        st.write("""
+        Nếu có LSX đang chạy → không cho update định mức
+        """)
+
+        if st.button("Kiểm tra Trigger", key="trg"):
+            df = get_lsx("DangChay")
+
+            if not df.empty:
+                st.error("❌ Có lệnh sản xuất đang chạy → KHÔNG ĐƯỢC UPDATE")
             else:
-                st.info("Bảng tồn tại nhưng không có dữ liệu cho năm tài chính này.")
-        else:
-            # Hiển thị lỗi đỏ để chứng minh Phân tán dọc
-            err = res.json().get("detail")
-            st.error(f"🔴 {err}")
-# --- 3. CHỨNG MINH NHÂN BẢN ---
-with tab3:
-    st.header("📑 Danh mục Vật tư Nhân bản")
-    st.write("Yêu cầu: Danh mục vật tư phải giống hệt nhau ở mọi site.")
-    
-    if st.button("🔄 So sánh dữ liệu Nhân bản (3 Site)"):
-        col_b1, col_b2, col_b3 = st.columns(3)
-        for s, col in zip(["BAC", "TRUNG", "NAM"], [col_b1, col_b2, col_b3]):
-            with col:
-                st.write(f"**Site {s}**")
-                res = requests.get(f"{API_BASE_URL}/vattu?site={s}")
-                if res.status_code == 200:
-                    st.dataframe(pd.DataFrame(res.json())[["MaVT", "TenVT"]], hide_index=False)
-        
-        st.success("📢 Thông điệp: Mã vật tư ở cả 3 bảng đều giống hệt nhau. Chi nhánh có thể lập phiếu tức thì mà không cần hỏi server trung tâm.")
+                st.success("✅ Không có LSX → Cho phép update")
 
-# --- 4. BÁO CÁO HỢP NHẤT (THE BIG DEMO) ---
-with tab4:
-    st.header("📊 Global Consolidated Report")
-    if st.button("🔥 Refresh Global (DB Link Execution)"):
-        res = requests.get(f"{API_BASE_URL}/report/tonkho-giavon")
-        if res.status_code == 200:
-            df_report = pd.DataFrame(res.json())
-            
-            # Metric Cards (Yêu cầu 4)
-            m1, m2 = st.columns(2)
-            total_stock = df_report["SoLuongTon"].sum()
-            total_val = df_report["TongGiaTri"].sum()
-            
-            m1.metric("📦 Tổng lượng tồn (Toàn quốc)", f"{total_stock:,.0f} đơn vị")
-            m2.metric("💸 Tổng giá trị tài sản", f"{total_val:,.0f} VNĐ")
-            
-            st.write("### Bảng dữ liệu hợp nhất từ DBLINK")
-            st.table(df_report)
-            
-            st.info("💡 Đây là sự kết hợp: Lấy số lượng từ 3 Site (Ngang) JOIN với giá từ Site NAM (Dọc) qua DB Link.")
+    # =========================
+    # 7. COUNT TRANSACTIONS
+    # =========================
+    with st.expander("7️⃣ COUNT Phiếu toàn hệ thống "):
+        st.write("Đếm số phiếu bằng distributed COUNT")
+        year = st.text_input("Nhập năm ", "2024", key="count_year")
 
-# --- Sidebar Footer ---
-st.sidebar.markdown("---")
-if st.sidebar.button("🛠️ Kiểm tra kết nối DB Link"):
-    # Giả lập check status
-    st.sidebar.code("BAC_DB -> OK\nTRUNG_DB -> OK\nNAM_DB -> OK")
+        if st.button("Chạy COUNT", key="count"):
+            data = call_api(f"/global/count-transactions?year={year}")
+
+            if data:
+                st.metric("Tổng phiếu", data[0]["total"])

@@ -1,8 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from db import execute_query
-from crud import vattu, tonkho, phieu, report
-from routers import vattu, tonkho, phieu, report
+
+from fastapi import FastAPI
+from routers import overview, inventory, manufacturing, costing, transaction, alert, global_query
+
 app = FastAPI(title="HUTECH Distributed DB System")
 
 # Enable CORS để gọi API từ Web/Mobile không bị chặn
@@ -12,27 +14,27 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Đăng ký các router
-app.include_router(vattu.router)
-app.include_router(tonkho.router)
-app.include_router(phieu.router)
-app.include_router(report.router)
-@app.get("/")
-async def root():
-    return {"message": "Welcome to Distributed Database API Phase 1"}
+# # Đăng ký các router
+# app.include_router(vattu.router)
+# app.include_router(tonkho.router)
+# app.include_router(phieu.router)
+# app.include_router(report.router)
+# @app.get("/")
+# async def root():
+#     return {"message": "Welcome to Distributed Database API Phase 1"}
 
 
-@app.get("/vattu")
-def read_vattu():
-    return vattu.get_all_vattu()
+# @app.get("/vattu")
+# def read_vattu():
+#     return vattu.get_all_vattu()
 
-@app.get("/tonkho/global")
-def read_global_inventory():
-    return tonkho.get_tonkho_global()
+# @app.get("/tonkho/global")
+# def read_global_inventory():
+#     return tonkho.get_tonkho_global()
 
-@app.get("/report/costing")
-def get_cost_report():
-    return report.join_tonkho_giavon()
+# @app.get("/report/costing")
+# def get_cost_report():
+#     return report.join_tonkho_giavon()
 
 
 
@@ -52,3 +54,14 @@ async def test_connection(site: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 # Chạy lệnh: uvicorn main:app --reload
+
+
+
+
+app.include_router(overview.router, prefix="/api")
+app.include_router(inventory.router, prefix="/api")
+app.include_router(manufacturing.router, prefix="/api")
+app.include_router(costing.router, prefix="/api")
+app.include_router(transaction.router, prefix="/api")
+app.include_router(alert.router, prefix="/api")
+app.include_router(global_query.router, prefix="/api")

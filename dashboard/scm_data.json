@@ -1,0 +1,286 @@
+{
+    "timestamp": "2026-04-05T19:27:09.998682",
+    "overview": {
+        "total_inventory": 750,
+        "total_lsx": 1,
+        "total_transactions": 2
+    },
+    "inventory": {
+        "summary": [
+            {
+                "site": "BAC",
+                "total_quantity": 250
+            },
+            {
+                "site": "TRUNG",
+                "total_quantity": 200
+            },
+            {
+                "site": "NAM",
+                "total_quantity": 300
+            }
+        ],
+        "item_VT01": [
+            {
+                "MAKHO": "KHO_B01",
+                "TENKHO": "Kho Bac 1",
+                "SOLUONGTON": 100
+            },
+            {
+                "MAKHO": "KHO_B01",
+                "TENKHO": "Kho Bac 1",
+                "SOLUONGTON": 80
+            },
+            {
+                "MAKHO": "KHO_B02",
+                "TENKHO": "Kho Bac 2",
+                "SOLUONGTON": 60
+            },
+            {
+                "MAKHO": "KHO_B02",
+                "TENKHO": "Kho Bac 2",
+                "SOLUONGTON": 10
+            }
+        ],
+        "by_warehouse": [
+            {
+                "MAKHO": "KHO_B01",
+                "TENKHO": "Kho Bac 1",
+                "SOLUONGTON": 100
+            },
+            {
+                "MAKHO": "KHO_B01",
+                "TENKHO": "Kho Bac 1",
+                "SOLUONGTON": 80
+            },
+            {
+                "MAKHO": "KHO_B02",
+                "TENKHO": "Kho Bac 2",
+                "SOLUONGTON": 60
+            },
+            {
+                "MAKHO": "KHO_B02",
+                "TENKHO": "Kho Bac 2",
+                "SOLUONGTON": 10
+            }
+        ],
+        "value_KHO_B01": {
+            "status": "success",
+            "site": "BAC",
+            "makho": "KHO_B01",
+            "data": [
+                {
+                    "MAKHO": "KHO_B01",
+                    "TENVT": "Iron",
+                    "SOLUONGTON": 100,
+                    "GIACHUAN": 10000,
+                    "THANHTIEN": 1000000
+                },
+                {
+                    "MAKHO": "KHO_B01",
+                    "TENVT": "Steel",
+                    "SOLUONGTON": 80,
+                    "GIACHUAN": 15000,
+                    "THANHTIEN": 1200000
+                }
+            ]
+        }
+    },
+    "production": {
+        "all_lsx": [
+            {
+                "malsx": "LSX_N01",
+                "ngaylap": "2026-04-01T00:00:00",
+                "soluongcansx": 20,
+                "trangthai": "DangChay",
+                "mathanhpham": "VT11",
+                "makho_sx": "KHO_N01"
+            }
+        ],
+        "running_lsx": [
+            {
+                "malsx": "LSX_N01",
+                "ngaylap": "2026-04-01T00:00:00",
+                "soluongcansx": 20,
+                "trangthai": "DangChay",
+                "mathanhpham": "VT11",
+                "makho_sx": "KHO_N01"
+            }
+        ]
+    },
+    "costing": {
+        "giavon": [
+            {
+                "mavt": "VT01",
+                "giachuan": 10000,
+                "giathucte": 12000,
+                "namtaichinh": 2026
+            },
+            {
+                "mavt": "VT02",
+                "giachuan": 15000,
+                "giathucte": 17000,
+                "namtaichinh": 2026
+            },
+            {
+                "mavt": "VT03",
+                "giachuan": 5000,
+                "giathucte": 6000,
+                "namtaichinh": 2026
+            },
+            {
+                "mavt": "VT10",
+                "giachuan": 5000000,
+                "giathucte": 5500000,
+                "namtaichinh": 2026
+            },
+            {
+                "mavt": "VT11",
+                "giachuan": 50000,
+                "giathucte": 60000,
+                "namtaichinh": 2026
+            }
+        ]
+    },
+    "transactions": {
+        "all": [
+            {
+                "maphieu": "PX_B01",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "XUAT",
+                "diengiai": "Xu?t s?n xu?t",
+                "makho": "KHO_B01"
+            },
+            {
+                "maphieu": "PN_T01",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "NHAP",
+                "diengiai": "Nh?p kho",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PN001",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "NhapMua",
+                "diengiai": "Nhap mua sat tu nha cung cap A",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PN002",
+                "ngaynx": "2026-04-02T00:00:00",
+                "loaiphieu": "NhapMua",
+                "diengiai": "Nhap hang nguyen lieu thang 4",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PX001",
+                "ngaynx": "2026-04-03T00:00:00",
+                "loaiphieu": "XuatKho",
+                "diengiai": "Xuat vai cho xuong may",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PN003",
+                "ngaynx": "2026-04-05T00:00:00",
+                "loaiphieu": "NhapMua",
+                "diengiai": "Nhap may CNC moi",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PN_N01",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "NHAP",
+                "diengiai": "Nh?p h…ng",
+                "makho": "KHO_N01"
+            },
+            {
+                "maphieu": "PX_N01",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "XUAT",
+                "diengiai": "Xu?t s?n xu?t",
+                "makho": "KHO_N01"
+            }
+        ],
+        "nhap_month_4": [
+            {
+                "maphieu": "PX_B01",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "XUAT",
+                "diengiai": "Xu?t s?n xu?t",
+                "makho": "KHO_B01"
+            },
+            {
+                "maphieu": "PN_T01",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "NHAP",
+                "diengiai": "Nh?p kho",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PN001",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "NhapMua",
+                "diengiai": "Nhap mua sat tu nha cung cap A",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PN002",
+                "ngaynx": "2026-04-02T00:00:00",
+                "loaiphieu": "NhapMua",
+                "diengiai": "Nhap hang nguyen lieu thang 4",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PX001",
+                "ngaynx": "2026-04-03T00:00:00",
+                "loaiphieu": "XuatKho",
+                "diengiai": "Xuat vai cho xuong may",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PN003",
+                "ngaynx": "2026-04-05T00:00:00",
+                "loaiphieu": "NhapMua",
+                "diengiai": "Nhap may CNC moi",
+                "makho": "KHO_T01"
+            },
+            {
+                "maphieu": "PN_N01",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "NHAP",
+                "diengiai": "Nh?p h…ng",
+                "makho": "KHO_N01"
+            },
+            {
+                "maphieu": "PX_N01",
+                "ngaynx": "2026-04-01T00:00:00",
+                "loaiphieu": "XUAT",
+                "diengiai": "Xu?t s?n xu?t",
+                "makho": "KHO_N01"
+            }
+        ]
+    },
+    "alerts": {
+        "low_stock": [
+            {
+                "makho": "KHO_B02",
+                "tenvt": "Iron",
+                "soluongton": 10,
+                "minstock": 30,
+                "SITE_LOCATION": "BAC"
+            }
+        ]
+    },
+    "global": {
+        "inventory_VT01": [
+            {
+                "total": 260
+            }
+        ],
+        "transaction_2024": [
+            {
+                "total": 0
+            }
+        ]
+    }
+}
